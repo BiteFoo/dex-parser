@@ -91,6 +91,52 @@ impl Method {
         utils::get_signature(self.annotations())
     }
 
+    // formatter
+    pub fn method_name_pretty(&self) -> Option<String> {
+        // formatter method name into pretty format to show
+        // a(Landroid/content/Context;)Landroid/view/View; -> a(android.content.Context)android.view.View
+        let method_name_s = self.method_name()?;
+        Some(
+            method_name_s
+                .replace("L", "")
+                .replace("/", ".")
+                .replace(";", ""),
+        )
+    }
+
+    //Read class's  method name , as a(Landroid/content/Context;)Landroid/view/View;
+    pub fn method_name(&self) -> Option<String> {
+        let name = self.name().to_string().clone();
+        let mut method_name: Vec<&str> = Vec::new();
+
+        method_name.push(name.as_str());
+        method_name.push("(");
+        let params: Vec<&Type> = self
+            .params
+            .iter()
+            .filter(|param| param.type_descriptor().to_string() != "V")
+            .collect();
+        // for (i, param) in params.iter().enumerate() {
+        //     method_name.push(&param.type_descriptor());
+        //     if i < params.len() - 1 {
+        //         method_name.push(",");
+        //     }
+        // }
+        //try this to reduce mut variable
+        let param_s = params
+            .into_iter()
+            .map(|p| p.type_descriptor().to_string())
+            .collect::<Vec<String>>()
+            .join(",");
+        method_name.push(&param_s);
+        method_name.push(")");
+        // read return type
+        let retype = self.return_type().type_descriptor();
+        if retype != "V" {
+            method_name.push(&retype); //
+        }
+        Some(method_name.join(""))
+    }
     /// Code and DebugInfo of the method.
     pub fn code(&self) -> Option<&CodeItem> {
         self.code.as_ref()

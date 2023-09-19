@@ -639,6 +639,12 @@ where
             .map(move |class_def_item| Class::try_from_dex(&self, &class_def_item?))
     }
 
+    pub fn get_class_name_by_id(&self, id: u32) -> Result<String> {
+        let class_type = self.get_type(id).unwrap();
+        let s = self.get_string(class_type.id())?;
+        Ok(s.to_string())
+    }
+
     /// Returns the `CodeItem` at the offset.
     pub fn get_code_item(&self, code_off: ulong) -> Result<Option<CodeItem>> {
         if code_off == 0 {
@@ -797,9 +803,9 @@ impl DexReader {
 #[cfg(test)]
 mod tests {
 
+    use super::Result;
     use memmap::MmapOptions;
     use std::fs::File;
-    use super::Result;
     use std::path::Path;
 
     #[test]

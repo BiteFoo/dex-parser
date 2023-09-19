@@ -211,6 +211,31 @@ impl Class {
             annotations: class_annotations,
         })
     }
+
+    // add access class_name
+    pub fn get_class_name<T: AsRef<[u8]>>(&self, dex: &super::Dex<T>) -> Option<String> {
+        let class_type = dex.get_type(self.id()).unwrap_or(Type {
+            id: 0xff,
+            type_descriptor: DexString::from("".to_string()),
+        });
+        if class_type.id() == 0xff {
+            return None; //Some(DexString::from("".to_string()))
+        }
+        // Some()
+        // Some(&DexString::from(
+        //     class_type.type_descriptor().to_string().clone(),
+        // ))
+        Some(class_type.type_descriptor().to_string())
+    }
+    pub fn get_class_name_pretty<T: AsRef<[u8]>>(&self, dex: &super::Dex<T>) -> Option<String> {
+        let class_name = self.get_class_name(dex)?;
+        Some(
+            class_name
+                .replace("L", "")
+                .replace("/", ".")
+                .replace(";", ""),
+        )
+    }
 }
 
 /// Contains the details about fields and methods of a class.

@@ -1,5 +1,5 @@
 //! Dex `Class` and supporting structures.
-use std::clone::Clone;
+use std::{clone::Clone, vec};
 
 use getset::{CopyGetters, Getters};
 use scroll::{ctx, Pread, Uleb128};
@@ -235,6 +235,29 @@ impl Class {
                 .replace("/", ".")
                 .replace(";", ""),
         )
+    }
+}
+
+pub const INVALID_CLASS_ID: u32 = 0xFFFFFFFF;
+
+impl Default for Class {
+    fn default() -> Self {
+        Class {
+            id: INVALID_CLASS_ID,
+            jtype: Type {
+                id: 0,
+                type_descriptor: DexString::new(""),
+            },
+            access_flags: AccessFlags { bits: 0 },
+            super_class: None,
+            interfaces: vec![],
+            source_file: None,
+            static_fields: vec![],
+            instance_fields: vec![],
+            direct_methods: vec![],
+            virtual_methods: vec![],
+            annotations: AnnotationSetItem::new(),
+        }
     }
 }
 

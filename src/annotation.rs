@@ -197,6 +197,13 @@ where
 pub struct AnnotationSetItem {
     annotations: Vec<AnnotationItem>,
 }
+impl AnnotationSetItem {
+    pub fn new() -> Self {
+        AnnotationSetItem {
+            annotations: vec![],
+        }
+    }
+}
 
 impl Deref for AnnotationSetItem {
     type Target = Vec<AnnotationItem>;

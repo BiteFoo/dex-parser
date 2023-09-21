@@ -21,6 +21,13 @@ pub type StringId = uint;
 pub struct DexString {
     string: Rc<String>,
 }
+impl DexString {
+    pub fn new(s: &str) -> Self {
+        DexString {
+            string: Rc::new(String::from(s)),
+        }
+    }
+}
 
 impl PartialEq<str> for DexString {
     fn eq(&self, other: &str) -> bool {
